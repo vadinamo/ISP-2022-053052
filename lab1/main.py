@@ -125,6 +125,7 @@ def main():
 
     n_grams = get_n_grams(entered_string, n)
     count = 0
+    
     print("Top %d %d-grams:" % (k, n))
     if len(n_grams.keys()) == 0 or k == 0:
         print("None")
