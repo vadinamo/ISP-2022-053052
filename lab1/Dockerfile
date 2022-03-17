@@ -1,3 +1,3 @@
-FROM python:3.8-slim-buster
+FROM python:3-alpine
 ADD main.py /
 CMD [ "python", "./main.py" ]
