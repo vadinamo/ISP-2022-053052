@@ -1,0 +1,53 @@
+__init__:
+  __code__:
+    co_argcount: 1
+    co_cellvars: !!python/tuple []
+    co_code: !!binary |
+      ZAF8AF8AZABTAA==
+    co_consts: !!python/tuple
+    - null
+    - aboba
+    co_filename: /Users/vadinamo/Documents/Python/lab2/main.py
+    co_firstlineno: 14
+    co_flags: 67
+    co_freevars: !!python/tuple []
+    co_kwonlyargcount: 0
+    co_lnotab: !!binary |
+      AAE=
+    co_name: __init__
+    co_names: !!python/tuple
+    - name
+    co_nlocals: 1
+    co_posonlyargcount: 0
+    co_stacksize: 2
+    co_varnames: &id001 !!python/tuple
+    - self
+  __defaults__: null
+  __globals__: {}
+  __name__: __init__
+get_name:
+  __code__:
+    co_argcount: 1
+    co_cellvars: !!python/tuple []
+    co_code: !!binary |
+      dAB8AGoBgwEBAGQAUwA=
+    co_consts: !!python/tuple
+    - null
+    co_filename: /Users/vadinamo/Documents/Python/lab2/main.py
+    co_firstlineno: 17
+    co_flags: 67
+    co_freevars: !!python/tuple []
+    co_kwonlyargcount: 0
+    co_lnotab: !!binary |
+      AAE=
+    co_name: get_name
+    co_names: !!python/tuple
+    - print
+    - name
+    co_nlocals: 1
+    co_posonlyargcount: 0
+    co_stacksize: 2
+    co_varnames: *id001
+  __defaults__: null
+  __globals__: {}
+  __name__: get_name
