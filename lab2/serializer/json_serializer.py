@@ -1,6 +1,4 @@
 from serializer.serializer import Serializer
-import inspect
-from typing import *
 
 
 class JsonSerializer(Serializer):
@@ -13,9 +11,9 @@ class JsonSerializer(Serializer):
         :param fp: str
         :return: None
         """
-        json = JsonSerializer.dumps(obj)
+        s = JsonSerializer.dumps(obj)
         file = open(fp, 'w')
-        file.write(json + '\n')
+        file.write(s + '\n')
         file.close()
 
     @staticmethod
@@ -26,16 +24,12 @@ class JsonSerializer(Serializer):
         :param obj:
         :return: str
         """
-        dictionary = {}
-        if inspect.isfunction(obj):
-            dictionary = JsonSerializer.function_to_dictionary(obj)
-        elif inspect.isclass(obj):
-            dictionary = JsonSerializer.class_to_dictionary(obj)
-        json = JsonSerializer.dictionary_to_json(dictionary)
-        return json
+        dictionary = JsonSerializer.object_serialization(obj)
+        s = JsonSerializer.dictionary_to_json(dictionary)
+        return s
 
     @staticmethod
-    def load(fp: str) -> object:
+    def load(fp: str):
         """
         Десериализует Python объект из файла формата json
 
@@ -43,11 +37,11 @@ class JsonSerializer(Serializer):
         :return: obj
         """
         file = open(fp, 'r')
-        json = ''
+        s = ''
         for line in file:
-            json += line
+            s += line
         file.close()
-        return JsonSerializer.loads(json)
+        return JsonSerializer.loads(s)
 
     @staticmethod
     def loads(s: str) -> object:
@@ -58,8 +52,7 @@ class JsonSerializer(Serializer):
         :return: obj
         """
         dictionary = JsonSerializer.json_to_dictionary(s)
-        obj = None
-        obj = JsonSerializer.object_deserialization(dict(s))
+        obj = JsonSerializer.object_deserialization(dictionary)
         return obj
 
     @staticmethod
@@ -71,33 +64,51 @@ class JsonSerializer(Serializer):
         :param level:
         :return:
         """
-        json = '{\n'
+        s = '{\n'
         count = 0
         for key, value in dictionary.items():
-            json += '\t' * level + JsonSerializer.value_to_json(key) + ': '
+            s += '\t' * level + JsonSerializer.value_to_json(key) + ': '
             if isinstance(value, dict):
-                json += JsonSerializer.dictionary_to_json(value, level + 1)
-            elif isinstance(value, (list, tuple, set, frozenset)):
-                json += JsonSerializer.list_to_json(value, level + 1)
+                s += JsonSerializer.dictionary_to_json(value, level + 1)
+
+            elif isinstance(value, (list, tuple, set, frozenset, bytes)):
+                s += JsonSerializer.list_to_json(value, level + 1)
+
             else:
-                json += JsonSerializer.value_to_json(value)
-            json += '\n' if count == len(dictionary) - 1 else ',\n'
+                s += JsonSerializer.value_to_json(value)
+
+            s += '\n' if count == len(dictionary) - 1 else ',\n'
             count += 1
-        json += '\t' * (level - 1) + '}'
-        return json
+
+        s += '\t' * (level - 1) + '}'
+
+        return s
 
     @staticmethod
     def list_to_json(_list: list, level: int) -> str:
-        """Converts list to json format string."""
-        json = '[\n'
+        """
+        Конвертирует list в строку формата json
+
+        :param _list: list
+        :param level: level
+        :return:
+        """
+        s = '[\n'
         for i in range(len(_list)):
-            json += '\t' * level + JsonSerializer.value_to_json(_list[i], level + 1) + ('\n' if i == len(_list) - 1 else ',\n')
-        json += '\t' * (level - 1) + ']'
-        return json
+            s += '\t' * level + JsonSerializer.value_to_json(_list[i], level + 1) + ('\n' if i == len(_list) - 1
+                                                                                     else ',\n')
+        s += '\t' * (level - 1) + ']'
+
+        return s
 
     @staticmethod
-    def json_to_dictionary(json: str) -> Dict[Any, Any]:
-        """Converts json format string to dictionary."""
+    def json_to_dictionary(s: str) -> dict:
+        """
+        Конвертирует формат json в словарь
+
+        :param s: str
+        :return: dict
+        """
         dictionary = {}
         key = ''
         value = ''
@@ -106,123 +117,174 @@ class JsonSerializer(Serializer):
         close = ''
         close_setting = False
         count = 0
-        for i in range(len(json)):
-            if json[i] == '"' and not value_writing and not close_setting:
+        for i in range(len(s)):
+            if s[i] == '"' and not value_writing and not close_setting:
                 if not key_writing:
                     key_writing = True
                     continue
+
                 else:
                     key_writing = False
                     continue
-            if json[i] == ' ' and not key_writing and not value_writing:
+
+            if s[i] == ' ' and not key_writing and not value_writing:
                 close_setting = True
                 continue
+
             if close_setting:
                 close_setting = False
-                if json[i] == '"':
+                if s[i] == '"':
                     close = '"'
                     count -= 1
-                elif json[i] == '[':
+
+                elif s[i] == '[':
                     close = ']'
-                elif json[i] == '{':
+
+                elif s[i] == '{':
                     close = '}'
+
                 else:
                     close = '\n'
                     count -= 1
-                    value += json[i]
+                    value += s[i]
                 value_writing = True
                 continue
+
             if key_writing:
-                key += json[i]
+                key += s[i]
+
             if value_writing:
-                if (close == '}' and json[i] == '{') or (close == ']' and json[i] == '[') or \
-                        (close == ')' and json[i] == '('):
+                if (close == '}' and s[i] == '{') \
+                        or (close == ']' and s[i] == '[') \
+                        or (close == ')' and s[i] == '('):
                     count += 1
-                if (close == '}' and json[i] == '}') or (close == ']' and json[i] == ']') or \
-                        (close == ')' and json[i] == ')'):
+
+                if (close == '}' and s[i] == '}') \
+                        or (close == ']' and s[i] == ']') \
+                        or (close == ')' and s[i] == ')'):
                     count -= 1
-                if (json[i] == close and count == -1) or (close == '\n' and (json[i] == ',' or json[i] == '\n')):
+
+                if (s[i] == close and count == -1) or (close == '\n' and (s[i] == ',' or s[i] == '\n')):
                     value_writing = False
-                    if json[i] == '"':
+                    if s[i] == '"':
                         dictionary[key] = JsonSerializer.json_to_value(value)
-                    elif json[i] == ']':
+
+                    elif s[i] == ']':
                         dictionary[key] = JsonSerializer.json_to_list(value)
-                    elif json[i] == '}':
+
+                    elif s[i] == '}':
                         dictionary[key] = JsonSerializer.json_to_dictionary(value)
+
                     else:
                         dictionary[key] = JsonSerializer.json_to_value(value)
+
                     key = ''
                     value = ''
                     close = ''
                     count = 0
+
                 else:
-                    value += json[i]
+                    value += s[i]
+
         return dictionary
 
     @staticmethod
-    def json_to_list(json: str) -> List[Any]:
-        """Converts json format string to list."""
+    def json_to_list(s: str) -> list:
+        """
+        Конвертирует строку формата json в list
+
+        :param s: str
+        :return: list
+        """
         _list = []
         value = ''
         value_writing = False
         close = ''
         count = 0
-        for i in range(len(json) - 1):
-            if json[i] == '\t' and not json[i + 1] == '\t' and not value_writing:
+        for i in range(len(s) - 1):
+            if s[i] == '\t' and not s[i + 1] == '\t' and not value_writing:
                 value_writing = True
-                if json[i + 1] == '{':
+
+                if s[i + 1] == '{':
                     close = '}'
-                if json[i + 1] == '[':
+
+                if s[i + 1] == '[':
                     close = ']'
+
                 continue
+
             if close == '}' or close == ']':
-                if (close == '}' and json[i] == '{') or (close == ']' and json[i] == '[') or \
-                        (close == ')' and json[i] == '('):
+                if (close == '}' and s[i] == '{') \
+                        or (close == ']' and s[i] == '[') \
+                        or (close == ')' and s[i] == '('):
                     count += 1
-                if (close == '}' and json[i] == '}') or (close == ']' and json[i] == ']') or \
-                        (close == ')' and json[i] == ')'):
+
+                if (close == '}' and s[i] == '}') \
+                        or (close == ']' and s[i] == ']') \
+                        or (close == ')' and s[i] == ')'):
                     count -= 1
-                if json[i] == close and count == 0:
+
+                if s[i] == close and count == 0:
                     value_writing = False
-                    if json[i] == ']':
+                    if s[i] == ']':
                         _list.append(JsonSerializer.json_to_list(value))
-                    elif json[i] == '}':
+
+                    elif s[i] == '}':
                         _list.append(JsonSerializer.json_to_dictionary(value))
+
                     value = ''
                     close = ''
             else:
-                if (json[i] == ',' and json[i + 1] == '\n') or json[i] == '\n':
+                if (s[i] == ',' and s[i + 1] == '\n') or s[i] == '\n':
                     value_writing = False
                     if not value == '':
                         _list.append(JsonSerializer.json_to_value(value))
                     value = ''
+
             if value_writing:
-                value += json[i]
+                value += s[i]
+
         return _list
 
     @staticmethod
-    def json_to_value(json: str) -> Any:
-        """Converts json format string to value."""
-        if json.isdigit() or (json[0] == '-' and json.replace('-', '').isdigit()):
-            return int(json)
-        if '.' in json:
-            temp = json.replace('.', '', 1)
+    def json_to_value(s: str):
+        """
+        Конвертирует строку формата json в значение
+
+        :param s: str
+        """
+        if s.isdigit() or (s[0] == '-' and s.replace('-', '').isdigit()):
+            return int(s)
+
+        if '.' in s:
+            temp = s.replace('.', '', 1)
             temp = JsonSerializer.json_to_value(temp)
             if isinstance(temp, int):
-                return float(json)
-        if json == 'true':
+                return float(s)
+
+        if s == 'true':
             return True
-        if json == 'false':
+
+        if s == 'false':
             return False
-        if json == 'null':
+
+        if s == 'null':
             return None
-        if json[0] == '"':
-            return json[1:-1]
-        return json
+
+        if s[0] == '"':
+            return s[1:-1]
+
+        return s
 
     @staticmethod
-    def value_to_json(value: Any, level=0) -> str:
-        """Converts value to json format string."""
+    def value_to_json(value, level=0) -> str:
+        """
+        Конвертирует значение в строку формата json
+
+        :param value:
+        :param level: int
+        :return: str
+        """
         if isinstance(value, str):
             return '"' + value + '"'
 
@@ -238,4 +300,5 @@ class JsonSerializer(Serializer):
         if isinstance(value, list):
             return JsonSerializer.list_to_json(value, level)
 
-        return 'null'
+        else:
+            return 'null'

@@ -1,5 +1,6 @@
 from serializer.serializer import Serializer
 import toml
+import tomli
 
 
 class TomlSerializer(Serializer):
@@ -18,8 +19,9 @@ class TomlSerializer(Serializer):
         """
         dictionary = Serializer.object_serialization(obj)
         dictionary = TomlSerializer.none_removing(dictionary)
+
         with open(fp, 'w') as f:
-            f.write(toml.dump(dictionary, f))
+            f.write(toml.dumps(dictionary))
             f.close()
 
     @staticmethod
@@ -42,8 +44,8 @@ class TomlSerializer(Serializer):
         :param fp: str
         :return: obj
         """
-        with open(fp, "r") as f:
-            dictionary = toml.load(f)
+        with open(fp, 'rb') as f:
+            dictionary = tomli.load(f)
             f.close()
 
         dictionary = TomlSerializer.none_returning(dict(dictionary))
@@ -58,14 +60,15 @@ class TomlSerializer(Serializer):
         :param s: str
         :return: obj
         """
-        dictionary = dict(toml.loads(s))
+        dictionary = dict(tomli.loads(s))
         dictionary = TomlSerializer.none_returning(dictionary)
+
         return Serializer.object_deserialization(dictionary)
 
     @staticmethod
     def none_removing(dictionary: dict) -> dict:
         """
-        Меняет все None в словаре на строку __None__
+        Меняет все типы None в словаре на строку "None"
 
         :param dictionary: dict
         :return: dict
@@ -77,21 +80,21 @@ class TomlSerializer(Serializer):
             elif type(value) == list:
                 for i in range(len(value)):
                     if value[i] is None:
-                        dictionary[key][i] = "__None__"
+                        dictionary[key][i] = "None"
 
             elif value is None:
-                dictionary[key] = "__None__"
+                dictionary[key] = "None"
 
             elif key is None:
                 buffer = dictionary.pop(key)
-                dictionary["__None__"] = buffer
+                dictionary["None"] = buffer
 
         return dictionary
 
     @staticmethod
     def none_returning(dictionary: dict) -> dict:
         """
-        Меняет все строки __None__ на None
+        Меняет все строки "None" на тип None
 
         :param dictionary: dict
         :return: dict
@@ -102,13 +105,13 @@ class TomlSerializer(Serializer):
 
             elif type(value) == list:
                 for i in range(len(value)):
-                    if value[i] == "__None__":
+                    if value[i] == "None":
                         dictionary[key][i] = None
 
-            elif value == "__None__":
+            elif value == "None":
                 dictionary[key] = None
 
-            elif key == "__None__":
+            elif key == "None":
                 buffer = dictionary.pop(key)
                 dictionary[None] = buffer
 

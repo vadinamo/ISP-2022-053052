@@ -1,48 +1,100 @@
-__name__ = "f"
-__defaults__ = "__None__"
-
-[__code__]
-co_argcount = 1
-co_cellvars = []
-co_code = [ 100, 1, 125, 1, 116, 0, 160, 1, 124, 0, 124, 1, 20, 0, 116, 2, 20, 0, 161, 1, 83, 0,]
-co_consts = [ "None", 123,]
-co_filename = "/Users/vadinamo/Documents/Python/lab2/main.py"
-co_firstlineno = 8
-co_flags = 67
-co_freevars = []
-co_kwonlyargcount = 0
-co_lnotab = [ 0, 1, 4, 1,]
-co_name = "f"
-co_names = [ "math", "sin", "c",]
-co_nlocals = 2
-co_posonlyargcount = 0
-co_stacksize = 4
-co_varnames = [ "x", "a",]
-
-[__globals__]
-math = "module"
-c = 42
-__name__ = "f"
-__defaults__ = "__None__"
-
-[__code__]
-co_argcount = 1
-co_cellvars = []
-co_code = [ 100, 1, 125, 1, 116, 0, 160, 1, 124, 0, 124, 1, 20, 0, 116, 2, 20, 0, 161, 1, 83, 0,]
-co_consts = [ "None", 123,]
-co_filename = "/Users/vadinamo/Documents/Python/lab2/main.py"
-co_firstlineno = 8
-co_flags = 67
-co_freevars = []
-co_kwonlyargcount = 0
-co_lnotab = [ 0, 1, 4, 1,]
-co_name = "f"
-co_names = [ "math", "sin", "c",]
-co_nlocals = 2
-co_posonlyargcount = 0
-co_stacksize = 4
-co_varnames = [ "x", "a",]
-
-[__globals__]
-math = "module"
-c = 42
+{
+	"__init__": {
+		"__name__": "__init__",
+		"__code__": {
+			"co_argcount": 1,
+			"co_cellvars": [
+			],
+			"co_code": [
+				100,
+				1,
+				124,
+				0,
+				95,
+				0,
+				100,
+				0,
+				83,
+				0
+			],
+			"co_consts": [
+				null,
+				"test success"
+			],
+			"co_filename": "/Users/vadinamo/Documents/Python/lab2/main.py",
+			"co_firstlineno": 14,
+			"co_flags": 67,
+			"co_freevars": [
+			],
+			"co_kwonlyargcount": 0,
+			"co_lnotab": [
+				0,
+				1
+			],
+			"co_name": "__init__",
+			"co_names": [
+				"name"
+			],
+			"co_nlocals": 1,
+			"co_posonlyargcount": 0,
+			"co_stacksize": 2,
+			"co_varnames": [
+				"self"
+			]
+		},
+		"__defaults__": null,
+		"__globals__": {
+		}
+	},
+	"get_name": {
+		"__name__": "get_name",
+		"__code__": {
+			"co_argcount": 1,
+			"co_cellvars": [
+			],
+			"co_code": [
+				116,
+				0,
+				124,
+				0,
+				106,
+				1,
+				131,
+				1,
+				1,
+				0,
+				100,
+				0,
+				83,
+				0
+			],
+			"co_consts": [
+				null
+			],
+			"co_filename": "/Users/vadinamo/Documents/Python/lab2/main.py",
+			"co_firstlineno": 17,
+			"co_flags": 67,
+			"co_freevars": [
+			],
+			"co_kwonlyargcount": 0,
+			"co_lnotab": [
+				0,
+				1
+			],
+			"co_name": "get_name",
+			"co_names": [
+				"print",
+				"name"
+			],
+			"co_nlocals": 1,
+			"co_posonlyargcount": 0,
+			"co_stacksize": 2,
+			"co_varnames": [
+				"self"
+			]
+		},
+		"__defaults__": null,
+		"__globals__": {
+		}
+	}
+}

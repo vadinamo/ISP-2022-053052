@@ -63,7 +63,6 @@ class Serializer(ABC):
         :param dictionary: dict
         :return: object
         """
-        print(dictionary)
         if isinstance(dictionary, dict):
             for key in dictionary.keys():
                 if key == "__code__":
@@ -188,6 +187,12 @@ class Serializer(ABC):
         for attribute in Serializer.get_function_attributes():
             attributes_list.append(function_attributes[attribute])
 
+        if isinstance(attributes_list[6], tuple):
+            attributes_list[6] = bytes(attributes_list[6])
+
+        if isinstance(attributes_list[13], tuple):
+            attributes_list[13] = bytes(attributes_list[13])
+
         return CodeType(*attributes_list)
 
     @staticmethod
@@ -212,10 +217,16 @@ class Serializer(ABC):
 
         function_dictionary['__globals__']['__builtins__'] = __builtins__
 
+        if isinstance(function_dictionary['__defaults__'], list):
+            _globals = Serializer.list_to_tuple(function_dictionary['__defaults__'])
+
+        else:
+            _globals = function_dictionary['__defaults__']
+
         return FunctionType(Serializer.dictionary_to_code(function_attributes),
                             function_dictionary['__globals__'],
                             function_dictionary['__name__'],
-                            Serializer.list_to_tuple(function_dictionary['__defaults__']))
+                            _globals)
 
     @staticmethod
     def class_to_dictionary(_class: type) -> dict:

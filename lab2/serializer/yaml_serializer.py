@@ -8,7 +8,7 @@ class YamlSerializer(Serializer):
     """
 
     @staticmethod
-    def dump(obj, fp: str) -> None:
+    def dump(obj:object, fp: str) -> None:
         """
         Сериализует Python объект в файл формата yaml
 
@@ -22,7 +22,7 @@ class YamlSerializer(Serializer):
             f.close()
 
     @staticmethod
-    def dumps(obj) -> str:
+    def dumps(obj:object) -> str:
         """
         Сериализует Python объект в строку формата yaml
 
