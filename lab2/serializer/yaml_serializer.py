@@ -1,4 +1,5 @@
 from serializer.serializer import Serializer
+from typing import Any
 import yaml
 
 
@@ -8,11 +9,11 @@ class YamlSerializer(Serializer):
     """
 
     @staticmethod
-    def dump(obj:object, fp: str) -> None:
+    def dump(obj: object, fp: str) -> None:
         """
         Сериализует Python объект в файл формата yaml
 
-        :param obj:
+        :param obj: object
         :param fp: str
         :return: None
         """
@@ -22,23 +23,23 @@ class YamlSerializer(Serializer):
             f.close()
 
     @staticmethod
-    def dumps(obj:object) -> str:
+    def dumps(obj: object) -> str:
         """
         Сериализует Python объект в строку формата yaml
 
-        :param obj:
+        :param obj: object
         :return: str
         """
         dictionary = Serializer.object_serialization(obj)
         return yaml.dump(dictionary)
 
     @staticmethod
-    def load(fp: str):
+    def load(fp: str) -> Any:
         """
         Десериализует Python объект из файла формата yaml
 
         :param fp: str
-        :return: obj
+        :return: object
         """
         obj = ""
         with open(fp, "r") as f:
@@ -49,12 +50,12 @@ class YamlSerializer(Serializer):
         return Serializer.object_deserialization(dictionary)
 
     @staticmethod
-    def loads(s: str):
+    def loads(s: str) -> Any:
         """
         Десериализует Python объект из строки формата yaml
 
         :param s: str
-        :return: obj
+        :return: object
         """
         dictionary = yaml.load(s, Loader=yaml.Loader)
         return Serializer.object_deserialization(dictionary)

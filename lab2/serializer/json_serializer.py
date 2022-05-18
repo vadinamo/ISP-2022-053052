@@ -1,9 +1,10 @@
 from serializer.serializer import Serializer
+from typing import Any
 
 
 class JsonSerializer(Serializer):
     @staticmethod
-    def dump(obj, fp: str) -> None:
+    def dump(obj: object, fp: str) -> None:
         """
         Сериализует Python объект в файл формата json
 
@@ -29,12 +30,12 @@ class JsonSerializer(Serializer):
         return s
 
     @staticmethod
-    def load(fp: str):
+    def load(fp: str) -> Any:
         """
         Десериализует Python объект из файла формата json
 
         :param fp: str
-        :return: obj
+        :return: Any
         """
         file = open(fp, 'r')
         s = ''
@@ -44,60 +45,59 @@ class JsonSerializer(Serializer):
         return JsonSerializer.loads(s)
 
     @staticmethod
-    def loads(s: str) -> object:
+    def loads(s: str) -> Any:
         """
-        Десериализует Python объект из строки формата toml
+        Десериализует Python объект из строки формата json
 
         :param s: str
-        :return: obj
+        :return: Any
         """
         dictionary = JsonSerializer.json_to_dictionary(s)
         obj = JsonSerializer.object_deserialization(dictionary)
         return obj
 
     @staticmethod
-    def dictionary_to_json(dictionary: dict, level=1) -> str:
+    def dictionary_to_json(dictionary: dict, tabs=1) -> str:
         """
-        Converts dictionary to json format string.
+        Конвертирует словарь в json
 
-        :param dictionary:
-        :param level:
+        :param dictionary: dict
+        :param tabs:
         :return:
         """
         s = '{\n'
         count = 0
         for key, value in dictionary.items():
-            s += '\t' * level + JsonSerializer.value_to_json(key) + ': '
+            s += '\t' * tabs + JsonSerializer.instance_to_json(key) + ': '
             if isinstance(value, dict):
-                s += JsonSerializer.dictionary_to_json(value, level + 1)
+                s += JsonSerializer.dictionary_to_json(value, tabs + 1)
 
             elif isinstance(value, (list, tuple, set, frozenset, bytes)):
-                s += JsonSerializer.list_to_json(value, level + 1)
+                s += JsonSerializer.list_to_json(value, tabs + 1)
 
             else:
-                s += JsonSerializer.value_to_json(value)
+                s += JsonSerializer.instance_to_json(value)
 
             s += '\n' if count == len(dictionary) - 1 else ',\n'
             count += 1
-
-        s += '\t' * (level - 1) + '}'
+        s += '\t' * (tabs - 1) + '}'
 
         return s
 
     @staticmethod
-    def list_to_json(_list: list, level: int) -> str:
+    def list_to_json(_list: list, tabs: int) -> str:
         """
         Конвертирует list в строку формата json
 
         :param _list: list
-        :param level: level
+        :param tabs: int
         :return:
         """
         s = '[\n'
         for i in range(len(_list)):
-            s += '\t' * level + JsonSerializer.value_to_json(_list[i], level + 1) + ('\n' if i == len(_list) - 1
+            s += '\t' * tabs + JsonSerializer.instance_to_json(_list[i], tabs + 1) + ('\n' if i == len(_list) - 1
                                                                                      else ',\n')
-        s += '\t' * (level - 1) + ']'
+        s += '\t' * (tabs - 1) + ']'
 
         return s
 
@@ -112,11 +112,14 @@ class JsonSerializer(Serializer):
         dictionary = {}
         key = ''
         value = ''
+        close = ''
+
         key_writing = False
         value_writing = False
-        close = ''
         close_setting = False
+
         count = 0
+
         for i in range(len(s)):
             if s[i] == '"' and not value_writing and not close_setting:
                 if not key_writing:
@@ -277,12 +280,12 @@ class JsonSerializer(Serializer):
         return s
 
     @staticmethod
-    def value_to_json(value, level=0) -> str:
+    def instance_to_json(value: Any, tabs=0) -> str:
         """
         Конвертирует значение в строку формата json
 
-        :param value:
-        :param level: int
+        :param value: Any
+        :param tabs: int
         :return: str
         """
         if isinstance(value, str):
@@ -295,10 +298,10 @@ class JsonSerializer(Serializer):
             return str(value)
 
         if isinstance(value, dict):
-            return JsonSerializer.dictionary_to_json(value, level)
+            return JsonSerializer.dictionary_to_json(value, tabs)
 
         if isinstance(value, list):
-            return JsonSerializer.list_to_json(value, level)
+            return JsonSerializer.list_to_json(value, tabs)
 
         else:
             return 'null'

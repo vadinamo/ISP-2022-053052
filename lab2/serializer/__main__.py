@@ -24,15 +24,13 @@ def convert_file(file_name: str, from_format: str, to_format: str) -> None:
     deserialize = input_serializer.load(file_name)
     output_serializer.dump(deserialize, new_file_name)
 
+    print('Convert was complited successfully')
 
-def create_parser():
-    """
-    Создает parser консольной утилиты
-    :return: Parser
-    """
-    parser = argparse.ArgumentParser(description='Сериализатор')
-    parser.add_argument('--name', type=str, required=True)
-    parser.add_argument('-i', type=str, required=True)
-    parser.add_argument('-o', type=str, required=True)
 
-    args = vars(parser.parse_args())
+parser = argparse.ArgumentParser(description='Сериализатор')
+parser.add_argument('name', type=str, help='file name')
+parser.add_argument('input_format', type=str, help='input format')
+parser.add_argument('output_format', type=str, help='output format')
+
+args = parser.parse_args()
+convert_file(args.name, args.input_format, args.output_format)

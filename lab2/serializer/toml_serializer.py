@@ -1,6 +1,6 @@
 from serializer.serializer import Serializer
-import toml
 import tomli
+import tomli_w
 
 
 class TomlSerializer(Serializer):
@@ -21,7 +21,7 @@ class TomlSerializer(Serializer):
         dictionary = TomlSerializer.none_removing(dictionary)
 
         with open(fp, 'w') as f:
-            f.write(toml.dumps(dictionary))
+            f.write(tomli_w.dumps(dictionary))
             f.close()
 
     @staticmethod
@@ -34,7 +34,7 @@ class TomlSerializer(Serializer):
         """
         dictionary = Serializer.object_serialization(obj)
         dictionary = TomlSerializer.none_removing(dictionary)
-        return toml.dumps(dictionary)
+        return tomli_w.dumps(dictionary)
 
     @staticmethod
     def load(fp: str):
@@ -80,15 +80,22 @@ class TomlSerializer(Serializer):
             elif type(value) == list:
                 for i in range(len(value)):
                     if value[i] is None:
-                        dictionary[key][i] = "None"
+                        dictionary[key][i] = 'None'
 
             elif value is None:
-                dictionary[key] = "None"
+                dictionary[key] = 'None'
 
             elif key is None:
                 buffer = dictionary.pop(key)
-                dictionary["None"] = buffer
+                dictionary['None'] = buffer
 
+            if key == 'co_consts':
+                value = list(value)
+                for i in range(len(value)):
+                    if value[i] is None:
+                        value[i] = 'None'
+
+                dictionary[key] = Serializer.list_to_tuple(value)
         return dictionary
 
     @staticmethod
@@ -100,18 +107,18 @@ class TomlSerializer(Serializer):
         :return: dict
         """
         for key, value in dictionary.items():
-            if type(value) == dict:
+            if isinstance(value, dict):
                 dictionary[key] = TomlSerializer.none_returning(value)
 
             elif type(value) == list:
                 for i in range(len(value)):
-                    if value[i] == "None":
+                    if value[i] == 'None':
                         dictionary[key][i] = None
 
-            elif value == "None":
+            elif value == 'None':
                 dictionary[key] = None
 
-            elif key == "None":
+            elif key == 'None':
                 buffer = dictionary.pop(key)
                 dictionary[None] = buffer
 

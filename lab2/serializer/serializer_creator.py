@@ -3,6 +3,7 @@ from serializer.json_serializer import JsonSerializer
 from serializer.toml_serializer import TomlSerializer
 from serializer.yaml_serializer import YamlSerializer
 
+
 class SerializerCreator:
     """
     Класс создает тип сериализатора в зависимости от исходного формата

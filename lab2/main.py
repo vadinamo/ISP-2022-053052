@@ -12,10 +12,21 @@ def f(x):
 
 class TestClass:
     def __init__(self):
-        self.name = 'test success'
+        self.test_str = 'test success'
+        self.test_list = [1, 2]
+        self.test_value = 123
+        self.test_bool = True
+        self.test_dict = {1: "1"}
 
     def get_name(self):
-        print(self.name)
+        return self.test_str, self.test_list, self.test_value, self.test_bool, self.test_dict
+
+
+def t():
+    def a():
+        print(c)
+
+    return a
 
 
 def main():
@@ -37,16 +48,15 @@ def main():
 
     YamlSerializer.dump(TestClass, file_name)
     test_class = YamlSerializer.load(file_name)
-    test_class().get_name()
+    print(test_class().get_name())
 
     TomlSerializer.dump(test_class, file_name)
     test_class = TomlSerializer.load(file_name)
-    test_class().get_name()
+    print(test_class().get_name())
 
     JsonSerializer.dump(test_class, file_name)
     test_class = JsonSerializer.load(file_name)
-    test_class().get_name()
-
+    print(test_class().get_name())
 
 
 if __name__ == '__main__':

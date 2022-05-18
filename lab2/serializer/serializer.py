@@ -1,5 +1,6 @@
 import importlib
 import inspect
+import struct
 from abc import abstractmethod, ABC
 from types import CodeType, FunctionType
 
@@ -69,9 +70,6 @@ class Serializer(ABC):
                     return Serializer.dictionary_to_function(dictionary)
                 if key == "__init__":
                     return Serializer.dictionary_to_class(dictionary)
-
-        else:
-            return Serializer.string_to_dictionary(dictionary)
 
     @staticmethod
     def get_function_attributes() -> dict:
@@ -162,7 +160,8 @@ class Serializer(ABC):
 
                     value = Serializer.list_to_tuple(value)
                 code_dict[key] = value
-
+                if key == 'co_code' or key == 'co_lnotab':
+                    code_dict[key] = Serializer.bytes_to_tuple(value)
         return code_dict
 
     @staticmethod
@@ -282,15 +281,11 @@ class Serializer(ABC):
         return instance
 
     @staticmethod
-    def string_to_dictionary(_string: dict) -> dict:
+    def bytes_to_tuple(x: bytes) -> tuple:
         """
-        Конвертирует строку в словарь
-
-        :param _string: dict
-        :return: dict
+        Конвертирует bytes в tuple
+        :param x: bytes
+        :return: tuple
         """
-
-        result = {}
-        for key, value in _string.items():
-            result[key] = Serializer.object_deserialization(value)
-        return result
+        data_ints = struct.unpack('<' + 'B' * len(x), x)
+        return data_ints

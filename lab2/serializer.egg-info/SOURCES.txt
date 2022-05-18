@@ -1,0 +1,11 @@
+setup.py
+serializer/__main__.py
+serializer/json_serializer.py
+serializer/serializer.py
+serializer/serializer_creator.py
+serializer/toml_serializer.py
+serializer/yaml_serializer.py
+serializer.egg-info/PKG-INFO
+serializer.egg-info/SOURCES.txt
+serializer.egg-info/dependency_links.txt
+serializer.egg-info/top_level.txt

@@ -1,10 +1,12 @@
-from distutils.core import setup
+from setuptools import setup
 
-setup(name='lab2_serializer',
-      version='1.0',
-      description='serializer',
-      author='Vadim Yurev',
-      author_email='vadinamo@gmail.com',
-      url='',
-      packages=['serializer'],
-      )
+setup(
+    name='serializer',
+    version='1',
+    packages=['serializer'],
+    url='-',
+    license='-',
+    author='Vadim Yurev',
+    author_email='vadinamo@gmail.com',
+    description='Serializer lab2'
+)
